@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./UserProfile.css";
+import Swal from "sweetalert2";
 
 export default class UserProfile extends Component {
   state = {
@@ -55,6 +56,54 @@ export default class UserProfile extends Component {
     });
   };
 
+  handleSubmit = (e) => {
+    // Prevent automatically reload page
+    e.preventDefault();
+
+    // Check all required info before submit
+    const { values, errors } = this.state;
+
+    let valid = true;
+    let profileContent = "";
+    let errorsContent = "";
+
+    // Check if all input have values
+    for (let key in values) {
+      if (values[key] === "") {
+        errorsContent += `<p className='text-left'> <b className='text-danger'>${key} is invalid!</b></p>`;
+        valid = false;
+      }
+
+      profileContent += `<p className='text-left'> <b>${key}:</b>${values[key]}</p>`;
+    }
+
+    // Check if no error in any input fields
+    for (let key in errors) {
+      if (errors[key] !== "") {
+        errorsContent += `<p className='text-left'> <b className='text-danger'>${key} is invalid!</b></p>`;
+        valid = false;
+      }
+    }
+
+    if (!valid) {
+      Swal.fire({
+        title: "Your Profile!",
+        html: errorsContent,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    // alert("Submit successfully!");
+    Swal.fire({
+      title: "Your Profile!",
+      html: profileContent,
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  };
+
   render() {
     return (
       <div
@@ -66,6 +115,7 @@ export default class UserProfile extends Component {
         }}
       >
         <form
+          onSubmit={this.handleSubmit}
           style={{
             fontSize:
               'font-family: "Google Sans", "Noto Sans Myanmar UI", arial, sans-serif',
